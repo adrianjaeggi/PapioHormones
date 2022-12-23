@@ -1,0 +1,250 @@
+---
+title: "Supplementary results"
+subtitle: "It’s not the hormones: Oxytocin and vasopressin concentrations do not differ between two baboon species (_Papio_ _hamadryas_ and _Papio_ _anubis_) with highly divergent social systems"
+author: "Daniel J. Coppeto, Erik J. Ringen, Vittorio Palmeri, Larry J. Young, Adrian V. Jaeggi"
+toc: true
+output:
+  pdf_document: default
+  
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message=FALSE, warning=FALSE)
+setwd("//files.iem.uzh.ch/Data/Institute/Human_Ecology/ajaegg/Private/My Documents/Emory/Student projects/Dan Coppeto/Coppeto et al Interspecific hormone comparison")
+library(brms)
+library(rethinking)
+m1<- readRDS("m1.rds")
+post_m1<- posterior_samples(m1)
+m2a<- readRDS("m2a.rds")
+m2b<- readRDS("m2b.rds")
+m2c<- readRDS("m2c.rds")
+m2d<- readRDS("m2d.rds")
+post_m2a<- posterior_samples(m2a)
+post_m2b<- posterior_samples(m2b)
+post_m2c<- posterior_samples(m2c)
+post_m2d<- posterior_samples(m2d)
+papio<- read.csv("papio.csv")
+```
+
+\newpage
+## Table S1: Full summary of the multi-response model
+Hormone levels were logged and centered on the population mean. Intercepts refer to the population mean for all standardized variables (indicated by [Z]), lactation status = not lactating, gestational day = 0, species = anubis, sex = female, blood in CSF = no (for CSF samples only), and plasma lysis = no (for plasma samples only). Thus, an intercept of 0 would indicate that a non-pregnant, non-lactating anubis female of average age and size, living in a average-sized corral, whose sample was not contaminated, has a hormone level that is exactly the same as the unadjusted population mean; a slope of 0.5 would indicate that hormone levels are predicted to increase by 0.5 on the log scale with a change of one standard deviation (for Z-scored variables) or when changing the level of categorical predictors (e.g. going to species = hamadryas) relative to the intercept. For visualization of the date spline see Figure S3. To summarize within- and between corral differences in hormone levels, we calculated the intra-class correlation (ICC) for the corral ID, i.e. the proportion of variance explained by unmeasured factors that differ between corrals; this was consistently lower than the within-corral (= residual) variance
+```{r table s1}
+library(knitr)
+
+Parameter = c("CSF Oxytocin", "Fixed Effects", "Intercept", "log weight [Z]", "Corral size [Z]", "Blood in CSF = Yes", "Lactation status = Lactating", "Gestational day", "Species = Hamadryas", "Sex = Male", "Species = Hamadryas * Sex = Male", "Date of collection [slope]", "Date of collection [smooth term]", "Variance components", "Corral ID [sd]", "Residual variation [sd]", "ICC Corral ID", "", "Plasma Oxytocin", "Fixed Effects", "Intercept", "log weight [Z]", "Corral size [Z]", "Blood lysis = yes", "Lactation status = Lactating", "Gestational day", "Species = Hamadryas", "Sex = Male", "Species = Hamadryas * Sex = Male", "Date of collection [slope]", "Date of collection [smooth term]", "Variance components", "Corral ID [sd]", "Residual variation [sd]", "ICC Corral ID", "", "Urinary Oxytocin", "Fixed Effects", "Intercept", "log weight [Z]", "Corral size [Z]", "Lactation status = Lactating", "Gestational day", "Species = Hamadryas", "Sex = Male", "Species = Hamadryas * Sex = Male", "Date of collection [slope]", "Date of collection [smooth term]", "Variance components", "Corral ID [sd]", "Residual variation [sd]", "ICC Corral ID", "", "CSF Arginine Vasopressin", "Fixed Effects", "Intercept", "log weight [Z]", "Corral size [Z]", "Blood in CSF = Yes", "Lactation status = Lactating", "Gestational day", "Species = Hamadryas", "Sex = Male", "Species = Hamadryas * Sex = Male", "Date of collection [slope]", "Date of collection [smooth term]", "Variance components", "Corral ID [sd]", "Residual variation [sd]", "ICC Corral ID")
+
+Median = c("","",sprintf(median(post_m1$b_logCSFOXTc_Intercept),fmt='%#.2f'), sprintf(median(post_m1$b_logCSFOXTc_log_weight.z),fmt='%#.2f'), sprintf(median(post_m1$b_logCSFOXTc_corral_size.z),fmt='%#.2f'), sprintf(median(post_m1$b_logCSFOXTc_Blood_in_CSFY),fmt='%#.2f'), sprintf(median(post_m1$b_logCSFOXTc_LactatingLactating),fmt='%#.2f'), sprintf(median(post_m1$b_logCSFOXTc_GD_DOC),fmt='%#.2f'), sprintf(median(post_m1$b_logCSFOXTc_SubspeciesHamadryas),fmt='%#.2f'), sprintf(median(post_m1$b_logCSFOXTc_SexM),fmt='%#.2f'), sprintf(median(post_m1$'b_logCSFOXTc_SubspeciesHamadryas:SexM'),fmt='%#.2f'), sprintf(median(post_m1$bs_logCSFOXTc_sdate.z_1),fmt='%#.2f'), sprintf(median(post_m1$sds_logCSFOXTc_sdate.z_1),fmt='%#.2f'), "",  sprintf(median(post_m1$sd_Corral__logCSFOXTc_Intercept),fmt='%#.2f'), sprintf(median(post_m1$sigma_logCSFOXTc),fmt='%#.2f'), sprintf(median(post_m1$sd_Corral__logCSFOXTc_Intercept/(post_m1$sd_Corral__logCSFOXTc_Intercept+post_m1$sigma_logCSFOXTc)),fmt='%#.2f'), "","","",sprintf(median(post_m1$b_logplasmaOXTc_Intercept),fmt='%#.2f'), sprintf(median(post_m1$b_logplasmaOXTc_log_weight.z),fmt='%#.2f'), sprintf(median(post_m1$b_logplasmaOXTc_corral_size.z),fmt='%#.2f'), sprintf(median(post_m1$b_logplasmaOXTc_Plasma_LysisY),fmt='%#.2f'), sprintf(median(post_m1$b_logplasmaOXTc_LactatingLactating),fmt='%#.2f'), sprintf(median(post_m1$b_logplasmaOXTc_GD_DOC),fmt='%#.2f'), sprintf(median(post_m1$b_logplasmaOXTc_SubspeciesHamadryas),fmt='%#.2f'), sprintf(median(post_m1$b_logplasmaOXTc_SexM),fmt='%#.2f'), sprintf(median(post_m1$'b_logplasmaOXTc_SubspeciesHamadryas:SexM'),fmt='%#.2f'), sprintf(median(post_m1$bs_logplasmaOXTc_sdate.z_1),fmt='%#.2f'), sprintf(median(post_m1$sds_logplasmaOXTc_sdate.z_1),fmt='%#.2f'), "",  sprintf(median(post_m1$sd_Corral__logplasmaOXTc_Intercept),fmt='%#.2f'), sprintf(median(post_m1$sigma_logplasmaOXTc),fmt='%#.2f'), sprintf(median(post_m1$sd_Corral__logplasmaOXTc_Intercept/(post_m1$sd_Corral__logplasmaOXTc_Intercept+post_m1$sigma_logplasmaOXTc)),fmt='%#.2f'), "","","",sprintf(median(post_m1$b_logurineOXTc_Intercept),fmt='%#.2f'), sprintf(median(post_m1$b_logurineOXTc_log_weight.z),fmt='%#.2f'), sprintf(median(post_m1$b_logurineOXTc_corral_size.z),fmt='%#.2f'), sprintf(median(post_m1$b_logurineOXTc_LactatingLactating),fmt='%#.2f'), sprintf(median(post_m1$b_logurineOXTc_GD_DOC),fmt='%#.2f'), sprintf(median(post_m1$b_logurineOXTc_SubspeciesHamadryas),fmt='%#.2f'), sprintf(median(post_m1$b_logurineOXTc_SexM),fmt='%#.2f'), sprintf(median(post_m1$'b_logurineOXTc_SubspeciesHamadryas:SexM'),fmt='%#.2f'), sprintf(median(post_m1$bs_logurineOXTc_sdate.z_1),fmt='%#.2f'), sprintf(median(post_m1$sds_logurineOXTc_sdate.z_1),fmt='%#.2f'), "",  sprintf(median(post_m1$sd_Corral__logurineOXTc_Intercept),fmt='%#.2f'), sprintf(median(post_m1$sigma_logurineOXTc),fmt='%#.2f'), sprintf(median(post_m1$sd_Corral__logurineOXTc_Intercept/(post_m1$sd_Corral__logurineOXTc_Intercept+post_m1$sigma_logurineOXTc)),fmt='%#.2f'), "","","",sprintf(median(post_m1$b_logCSFAVPc_Intercept),fmt='%#.2f'), sprintf(median(post_m1$b_logCSFAVPc_log_weight.z),fmt='%#.2f'), sprintf(median(post_m1$b_logCSFAVPc_corral_size.z),fmt='%#.2f'), sprintf(median(post_m1$b_logCSFAVPc_Blood_in_CSFY),fmt='%#.2f'), sprintf(median(post_m1$b_logCSFAVPc_LactatingLactating),fmt='%#.2f'), sprintf(median(post_m1$b_logCSFAVPc_GD_DOC),fmt='%#.2f'), sprintf(median(post_m1$b_logCSFAVPc_SubspeciesHamadryas),fmt='%#.2f'), sprintf(median(post_m1$b_logCSFAVPc_SexM),fmt='%#.2f'), sprintf(median(post_m1$'b_logCSFAVPc_SubspeciesHamadryas:SexM'),fmt='%#.2f'), sprintf(median(post_m1$bs_logCSFAVPc_sdate.z_1),fmt='%#.2f'), sprintf(median(post_m1$sds_logCSFAVPc_sdate.z_1),fmt='%#.2f'), "",  sprintf(median(post_m1$sd_Corral__logCSFAVPc_Intercept),fmt='%#.2f'), sprintf(median(post_m1$sigma_logCSFAVPc),fmt='%#.2f'), sprintf(median(post_m1$sd_Corral__logCSFAVPc_Intercept/(post_m1$sd_Corral__logCSFAVPc_Intercept+post_m1$sigma_logCSFAVPc)),fmt='%#.2f'))
+
+lwr90CI_CSFOT = c("","",sprintf(HPDI(post_m1$b_logCSFOXTc_Intercept, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logCSFOXTc_log_weight.z, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logCSFOXTc_corral_size.z, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logCSFOXTc_Blood_in_CSFY, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logCSFOXTc_LactatingLactating, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logCSFOXTc_GD_DOC, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logCSFOXTc_SubspeciesHamadryas, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logCSFOXTc_SexM, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$'b_logCSFOXTc_SubspeciesHamadryas:SexM', prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$bs_logCSFOXTc_sdate.z_1, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$sds_logCSFOXTc_sdate.z_1, prob=0.9)[1],fmt='%#.2f'), "", sprintf(HPDI(post_m1$sd_Corral__logCSFOXTc_Intercept, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$sigma_logCSFOXTc, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$sd_Corral__logCSFOXTc_Intercept/(post_m1$sd_Corral__logCSFOXTc_Intercept+post_m1$sigma_logCSFOXTc), prob=0.9)[1],fmt='%#.2f'))
+
+lwr90CI_plasmaOT = c("","","",sprintf(HPDI(post_m1$b_logplasmaOXTc_Intercept, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logplasmaOXTc_log_weight.z, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logplasmaOXTc_corral_size.z, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logplasmaOXTc_Plasma_LysisY, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logplasmaOXTc_LactatingLactating, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logplasmaOXTc_GD_DOC, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logplasmaOXTc_SubspeciesHamadryas, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logplasmaOXTc_SexM, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$'b_logplasmaOXTc_SubspeciesHamadryas:SexM', prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$bs_logplasmaOXTc_sdate.z_1, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$sds_logplasmaOXTc_sdate.z_1, prob=0.9)[1],fmt='%#.2f'), "", sprintf(HPDI(post_m1$sd_Corral__logplasmaOXTc_Intercept, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$sigma_logplasmaOXTc, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$sd_Corral__logplasmaOXTc_Intercept/(post_m1$sd_Corral__logplasmaOXTc_Intercept+post_m1$sigma_logplasmaOXTc), prob=0.9)[1],fmt='%#.2f'))
+
+lwr90CI_urineOT = c("","","",sprintf(HPDI(post_m1$b_logurineOXTc_Intercept, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logurineOXTc_log_weight.z, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logurineOXTc_corral_size.z, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logurineOXTc_LactatingLactating, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logurineOXTc_GD_DOC, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logurineOXTc_SubspeciesHamadryas, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logurineOXTc_SexM, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$'b_logurineOXTc_SubspeciesHamadryas:SexM', prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$bs_logurineOXTc_sdate.z_1, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$sds_logurineOXTc_sdate.z_1, prob=0.9)[1],fmt='%#.2f'), "", sprintf(HPDI(post_m1$sd_Corral__logurineOXTc_Intercept, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$sigma_logurineOXTc, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$sd_Corral__logurineOXTc_Intercept/(post_m1$sd_Corral__logurineOXTc_Intercept+post_m1$sigma_logurineOXTc), prob=0.9)[1],fmt='%#.2f'))
+
+lwr90CI_CSFAVP = c("","","",sprintf(HPDI(post_m1$b_logCSFAVPc_Intercept, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logCSFAVPc_log_weight.z, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logCSFAVPc_corral_size.z, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logCSFAVPc_Blood_in_CSFY, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logCSFAVPc_LactatingLactating, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logCSFAVPc_GD_DOC, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logCSFAVPc_SubspeciesHamadryas, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logCSFAVPc_SexM, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$'b_logCSFAVPc_SubspeciesHamadryas:SexM', prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$bs_logCSFAVPc_sdate.z_1, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$sds_logCSFAVPc_sdate.z_1, prob=0.9)[1],fmt='%#.2f'),"", sprintf(HPDI(post_m1$sd_Corral__logCSFAVPc_Intercept, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$sigma_logCSFAVPc, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m1$sd_Corral__logCSFAVPc_Intercept/(post_m1$sd_Corral__logCSFAVPc_Intercept+post_m1$sigma_logCSFAVPc), prob=0.9)[1],fmt='%#.2f'))
+
+lower90CI<- c(lwr90CI_CSFOT, lwr90CI_plasmaOT, lwr90CI_urineOT, lwr90CI_CSFAVP)
+
+upr90CI_CSFOT = c("","",sprintf(HPDI(post_m1$b_logCSFOXTc_Intercept, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logCSFOXTc_log_weight.z, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logCSFOXTc_corral_size.z, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logCSFOXTc_Blood_in_CSFY, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logCSFOXTc_LactatingLactating, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logCSFOXTc_GD_DOC, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logCSFOXTc_SubspeciesHamadryas, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logCSFOXTc_SexM, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$'b_logCSFOXTc_SubspeciesHamadryas:SexM', prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$bs_logCSFOXTc_sdate.z_1, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$sds_logCSFOXTc_sdate.z_1, prob=0.9)[2],fmt='%#.2f'), "", sprintf(HPDI(post_m1$sd_Corral__logCSFOXTc_Intercept, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$sigma_logCSFOXTc, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$sd_Corral__logCSFOXTc_Intercept/(post_m1$sd_Corral__logCSFOXTc_Intercept+post_m1$sigma_logCSFOXTc), prob=0.9)[2],fmt='%#.2f'))
+
+upr90CI_plasmaOT = c("","","",sprintf(HPDI(post_m1$b_logplasmaOXTc_Intercept, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logplasmaOXTc_log_weight.z, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logplasmaOXTc_corral_size.z, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logplasmaOXTc_Plasma_LysisY, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logplasmaOXTc_LactatingLactating, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logplasmaOXTc_GD_DOC, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logplasmaOXTc_SubspeciesHamadryas, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logplasmaOXTc_SexM, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$'b_logplasmaOXTc_SubspeciesHamadryas:SexM', prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$bs_logplasmaOXTc_sdate.z_1, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$sds_logplasmaOXTc_sdate.z_1, prob=0.9)[2],fmt='%#.2f'), "",  sprintf(HPDI(post_m1$sd_Corral__logplasmaOXTc_Intercept, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$sigma_logplasmaOXTc, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$sd_Corral__logplasmaOXTc_Intercept/(post_m1$sd_Corral__logplasmaOXTc_Intercept+post_m1$sigma_logplasmaOXTc), prob=0.9)[2],fmt='%#.2f'))
+
+upr90CI_urineOT = c("","","",sprintf(HPDI(post_m1$b_logurineOXTc_Intercept, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logurineOXTc_log_weight.z, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logurineOXTc_corral_size.z, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logurineOXTc_LactatingLactating, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logurineOXTc_GD_DOC, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logurineOXTc_SubspeciesHamadryas, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logurineOXTc_SexM, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$'b_logurineOXTc_SubspeciesHamadryas:SexM', prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$bs_logurineOXTc_sdate.z_1, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$sds_logurineOXTc_sdate.z_1, prob=0.9)[2],fmt='%#.2f'), "",  sprintf(HPDI(post_m1$sd_Corral__logurineOXTc_Intercept, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$sigma_logurineOXTc, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$sd_Corral__logurineOXTc_Intercept/(post_m1$sd_Corral__logurineOXTc_Intercept+post_m1$sigma_logurineOXTc), prob=0.9)[2],fmt='%#.2f'))
+
+upr90CI_CSFAVP = c("","","",sprintf(HPDI(post_m1$b_logCSFAVPc_Intercept, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logCSFAVPc_log_weight.z, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logCSFAVPc_corral_size.z, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logCSFAVPc_Blood_in_CSFY, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logCSFAVPc_LactatingLactating, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logCSFAVPc_GD_DOC, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logCSFAVPc_SubspeciesHamadryas, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$b_logCSFAVPc_SexM, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$'b_logCSFAVPc_SubspeciesHamadryas:SexM', prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$bs_logCSFAVPc_sdate.z_1, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$sds_logCSFAVPc_sdate.z_1, prob=0.9)[2],fmt='%#.2f'), "",  sprintf(HPDI(post_m1$sd_Corral__logCSFAVPc_Intercept, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$sigma_logCSFAVPc, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m1$sd_Corral__logCSFAVPc_Intercept/(post_m1$sd_Corral__logCSFAVPc_Intercept+post_m1$sigma_logCSFAVPc), prob=0.9)[2],fmt='%#.2f'))
+
+upper90CI<- c(upr90CI_CSFOT, upr90CI_plasmaOT, upr90CI_urineOT, upr90CI_CSFAVP)
+
+
+s1<- data.frame(Parameter, Median, lower90CI, upper90CI)
+                
+kable(s1) 
+  
+```
+
+
+
+``` {r prep m2}
+CSFOT_anubismales<- post_m2a$b_Intercept+post_m2a$b_SexM
+CSFOT_hamadryasmales<- post_m2a$b_Intercept+post_m2a$b_SexM+post_m2a$b_SubspeciesHamadryas+post_m2a$'b_SubspeciesHamadryas:SexM'
+
+plasmaOT_anubismales<- post_m2b$b_Intercept+post_m2b$b_SexM
+plasmaOT_hamadryasmales<- post_m2b$b_Intercept+post_m2b$b_SexM+post_m2b$b_SubspeciesHamadryas+post_m2b$'b_SubspeciesHamadryas:SexM'
+
+urineOT_anubismales<- post_m2c$b_Intercept+post_m2c$b_SexM
+urineOT_hamadryasmales<- post_m2c$b_Intercept+post_m2c$b_SexM+post_m2c$b_SubspeciesHamadryas+post_m2c$'b_SubspeciesHamadryas:SexM'
+
+CSFAVP_anubismales<- post_m2d$b_Intercept+post_m2d$b_SexM
+CSFAVP_hamadryasmales<- post_m2d$b_Intercept+post_m2d$b_SexM+post_m2d$b_SubspeciesHamadryas+post_m2d$'b_SubspeciesHamadryas:SexM'
+
+
+CSFOT_hamadryasfemales<- post_m2a$b_Intercept+post_m2a$b_SubspeciesHamadryas
+
+plasmaOT_hamadryasfemales<- post_m2b$b_Intercept+post_m2b$b_SubspeciesHamadryas
+
+urineOT_hamadryasfemales<- post_m2c$b_Intercept+post_m2c$b_SubspeciesHamadryas
+
+CSFAVP_hamadryasfemales<- post_m2d$b_Intercept+post_m2d$b_SubspeciesHamadryas
+
+```
+
+\newpage
+## Species differences and biological validation in univariate models
+
+Results about species differences in hormone levels were similar when using univariate models (Figure S1). Specifically, hamadryas females did not have consistently higher hormone levels than anubis females (CSF OT: median difference = `r round(median(post_m2a$b_SubspeciesHamadryas),2)`, 90% CI = `r round(HPDI(post_m2a$b_SubspeciesHamadryas, prob=0.9)[1],2)` - `r round(HPDI(post_m2a$b_SubspeciesHamadryas, prob=0.9)[2],2)`, PP~hamadryas>anubis~ = `r round(sum(post_m2a$b_SubspeciesHamadryas>0)/length(post_m2a$b_SubspeciesHamadryas),2)`; plasma OT: median difference = `r round(median(post_m2b$b_SubspeciesHamadryas),2)`, 90% CI = `r round(HPDI(post_m2b$b_SubspeciesHamadryas, prob=0.9)[1],2)` - `r round(HPDI(post_m2b$b_SubspeciesHamadryas, prob=0.9)[2],2)`, PP~hamadryas>anubis~ = `r round(sum(post_m2b$b_SubspeciesHamadryas>0)/length(post_m2b$b_SubspeciesHamadryas),2)`; urinary OT: median difference = `r round(median(post_m2c$b_SubspeciesHamadryas),2)`, 90% CI = `r round(HPDI(post_m2c$b_SubspeciesHamadryas, prob=0.9)[1],2)` - `r round(HPDI(post_m2c$b_SubspeciesHamadryas, prob=0.9)[2],2)`, PP~hamadryas>anubis~ = `r round(sum(post_m2c$b_SubspeciesHamadryas>0)/length(post_m2c$b_SubspeciesHamadryas),2)`; CSF AVP: median difference = `r round(median(post_m2d$b_SubspeciesHamadryas),2)`, 90% CI = `r round(HPDI(post_m2d$b_SubspeciesHamadryas, prob=0.9)[1],2)` - `r round(HPDI(post_m2d$b_SubspeciesHamadryas, prob=0.9)[2],2)`, PP~hamadryas>anubis~ = `r round(sum(post_m2d$b_SubspeciesHamadryas>0)/length(post_m2d$b_SubspeciesHamadryas),2)`), nor did hamadryas males have consistently higher levels than anubis males (CSF OT: median difference = `r round(median(CSFOT_hamadryasmales-CSFOT_anubismales),2)`, 90% CI = `r round(HPDI(CSFOT_hamadryasmales-CSFOT_anubismales, prob=0.9)[1],2)` - `r round(HPDI(CSFOT_hamadryasmales-CSFOT_anubismales, prob=0.9)[2],2)`, PP~hamadryas>anubis~ = `r round(sum(CSFOT_hamadryasmales-CSFOT_anubismales>0)/length(CSFOT_hamadryasmales),2)`; Plasma OT: median difference = `r round(median(plasmaOT_hamadryasmales-plasmaOT_anubismales),2)`, 90% CI = `r round(HPDI(plasmaOT_hamadryasmales-plasmaOT_anubismales, prob=0.9)[1],2)` - `r round(HPDI(plasmaOT_hamadryasmales-plasmaOT_anubismales, prob=0.9)[2],2)`, PP~hamadryas>anubis~ = `r round(sum(plasmaOT_hamadryasmales-plasmaOT_anubismales>0)/length(plasmaOT_hamadryasmales),2)`; Urinary OT: median difference = `r round(median(urineOT_hamadryasmales-urineOT_anubismales),2)`, 90% CI = `r round(HPDI(urineOT_hamadryasmales-urineOT_anubismales, prob=0.9)[1],2)` - `r round(HPDI(urineOT_hamadryasmales-urineOT_anubismales, prob=0.9)[2],2)`, PP~hamadryas>anubis~ = `r round(sum(urineOT_hamadryasmales-urineOT_anubismales>0)/length(urineOT_hamadryasmales),2)`; CSF AVP: median difference = `r round(median(CSFAVP_hamadryasmales-CSFAVP_anubismales),2)`, 90% CI = `r round(HPDI(CSFAVP_hamadryasmales-CSFAVP_anubismales, prob=0.9)[1],2)` - `r round(HPDI(CSFAVP_hamadryasmales-CSFAVP_anubismales, prob=0.9)[2],2)`, PP~hamadryas>anubis~ = `r round(sum(CSFAVP_hamadryasmales-CSFAVP_anubismales>0)/length(CSFAVP_hamadryasmales),2)`).
+
+As in the multi-response model, other associations provide important biological validation. Consistent with OT's reproductive functions, females of both species tended to have higher OT levels than males (Anubis CSF OT: median difference = `r -round(median(post_m2a$b_SexM),2)`, 90% CI = `r -round(HPDI(post_m2a$b_SexM, prob=0.9)[1],2)` - `r -round(HPDI(post_m2a$b_SexM, prob=0.9)[2],2)`, PP~females>males~ = `r round(sum(post_m2a$b_SexM<0)/length(post_m2a$b_SexM),2)`; Anubis Plasma OT: median difference = `r -round(median(post_m2b$b_SexM),2)`, 90% CI = `r -round(HPDI(post_m2b$b_SexM, prob=0.9)[1],2)` - `r -round(HPDI(post_m2b$b_SexM, prob=0.9)[2],2)`, PP~females>males~ = `r round(sum(post_m2b$b_SexM<0)/length(post_m2b$b_SexM),2)`; Anubis Urinary OT: median difference = `r -round(median(post_m2c$b_SexM),2)`, 90% CI = `r -round(HPDI(post_m2c$b_SexM, prob=0.9)[1],2)` - `r -round(HPDI(post_m2c$b_SexM, prob=0.9)[2],2)`, PP~females>males~ = `r round(sum(post_m2c$b_SexM<0)/length(post_m2c$b_SexM),2)`; Hamadryas CSF OT: median difference = `r round(median(CSFOT_hamadryasfemales-CSFOT_hamadryasmales),2)`, 90% CI = `r round(HPDI(CSFOT_hamadryasfemales-CSFOT_hamadryasmales, prob=0.9)[1],2)` - `r round(HPDI(CSFOT_hamadryasfemales-CSFOT_hamadryasmales, prob=0.9)[2],2)`, PP~females>males~ = `r round(sum(CSFOT_hamadryasfemales-CSFOT_hamadryasmales>0)/length(CSFOT_hamadryasfemales),2)`; Hamadryas Plasma OT: median difference = `r round(median(plasmaOT_hamadryasfemales-plasmaOT_hamadryasmales),2)`, 90% CI = `r round(HPDI(plasmaOT_hamadryasfemales-plasmaOT_hamadryasmales, prob=0.9)[1],2)` - `r round(HPDI(plasmaOT_hamadryasfemales-plasmaOT_hamadryasmales, prob=0.9)[2],2)`, PP~females>males~ = `r round(sum(plasmaOT_hamadryasfemales-plasmaOT_hamadryasmales>0)/length(plasmaOT_hamadryasfemales),2)`; Hamadryas Urinary OT: median difference = `r round(median(urineOT_hamadryasfemales-urineOT_hamadryasmales),2)`, 90% CI = `r round(HPDI(urineOT_hamadryasfemales-urineOT_hamadryasmales, prob=0.9)[1],2)` - `r round(HPDI(urineOT_hamadryasfemales-urineOT_hamadryasmales, prob=0.9)[2],2)`, PP~females>males~ = `r round(sum(urineOT_hamadryasfemales-urineOT_hamadryasmales>0)/length(urineOT_hamadryasfemales),2)`), and peripheral OT levels were positively associated with gestational day (Plasma OT: median slope = `r round(median(post_m2b$b_GD_DOC),2)`, 90% CI = `r round(HPDI(post_m2b$b_GD_DOC, prob=0.9)[1],2)` - `r round(HPDI(post_m2b$b_GD_DOC, prob=0.9)[2],2)`, PP~slope>0~ = `r round(sum(post_m2b$b_GD_DOC>0)/length(post_m2b$b_GD_DOC),2)`; Urinary OT: median slope = `r round(median(post_m2c$b_GD_DOC),2)`, 90% CI = `r round(HPDI(post_m2c$b_GD_DOC, prob=0.9)[1],2)` - `r round(HPDI(post_m2c$b_GD_DOC, prob=0.9)[2],2)`, PP~slope>0~ = `r round(sum(post_m2c$b_GD_DOC>0)/length(post_m2c$b_GD_DOC),2)`). 
+
+\newpage
+## Table S2: Full summary of univariate models
+Same as Table S1, but each dependent variable (CSF OT, plasma OT, urinary OT, CSF AVP) was analyzed separately, without imputation but using information about censored data. For more details see Table S1.
+```{r table s2}
+library(knitr)
+
+Parameter = c("CSF Oxytocin", "Fixed Effects", "Intercept", "log weight [Z]", "Corral size [Z]", "Blood in CSF = Yes", "Lactation status = Lactating", "Gestational day", "Species = Hamadryas", "Sex = Male", "Species = Hamadryas * Sex = Male", "Date of collection [slope]", "Date of collection [smooth term]", "Variance components", "Corral ID [sd]", "Residual variation [sd]", "ICC Corral ID", "", "Plasma Oxytocin", "Fixed Effects", "Intercept", "log weight [Z]", "Corral size [Z]", "Blood lysis = yes", "Lactation status = Lactating", "Gestational day", "Species = Hamadryas", "Sex = Male", "Species = Hamadryas * Sex = Male", "Date of collection [slope]", "Date of collection [smooth term]", "Variance components", "Corral ID [sd]", "Residual variation [sd]", "ICC Corral ID", "", "Urinary Oxytocin", "Fixed Effects", "Intercept", "log weight [Z]", "Corral size [Z]", "Lactation status = Lactating", "Gestational day", "Species = Hamadryas", "Sex = Male", "Species = Hamadryas * Sex = Male", "Date of collection [slope]", "Date of collection [smooth term]", "Variance components", "Corral ID [sd]", "Residual variation [sd]", "ICC Corral ID", "", "CSF Arginine Vasopressin", "Fixed Effects", "Intercept", "log weight [Z]", "Corral size [Z]", "Blood in CSF = Yes", "Lactation status = Lactating", "Gestational day", "Species = Hamadryas", "Sex = Male", "Species = Hamadryas * Sex = Male", "Date of collection [slope]", "Date of collection [smooth term]", "Variance components", "Corral ID [sd]", "Residual variation [sd]", "ICC Corral ID")
+
+Median = c("","",sprintf(median(post_m2a$b_Intercept),fmt='%#.2f'), sprintf(median(post_m2a$b_log_weight.z),fmt='%#.2f'), sprintf(median(post_m2a$b_corral_size.z),fmt='%#.2f'), sprintf(median(post_m2a$b_Blood_in_CSFY),fmt='%#.2f'), sprintf(median(post_m2a$b_LactatingLactating),fmt='%#.2f'), sprintf(median(post_m2a$b_GD_DOC),fmt='%#.2f'), sprintf(median(post_m2a$b_SubspeciesHamadryas),fmt='%#.2f'), sprintf(median(post_m2a$b_SexM),fmt='%#.2f'), sprintf(median(post_m2a$'b_SubspeciesHamadryas:SexM'),fmt='%#.2f'), sprintf(median(post_m2a$bs_sdate.z_1),fmt='%#.2f'), sprintf(median(post_m2a$sds_sdate.z_1),fmt='%#.2f'), "",  sprintf(median(post_m2a$sd_Corral__Intercept),fmt='%#.2f'), sprintf(median(post_m2a$sigma),fmt='%#.2f'), sprintf(median(post_m2a$sd_Corral__Intercept/(post_m2a$sd_Corral__Intercept+post_m2a$sigma)),fmt='%#.2f'), "","","",sprintf(median(post_m2b$b_Intercept),fmt='%#.2f'), sprintf(median(post_m2b$b_log_weight.z),fmt='%#.2f'), sprintf(median(post_m2b$b_corral_size.z),fmt='%#.2f'), sprintf(median(post_m2b$b_Plasma_LysisY),fmt='%#.2f'), sprintf(median(post_m2b$b_LactatingLactating),fmt='%#.2f'), sprintf(median(post_m2b$b_GD_DOC),fmt='%#.2f'), sprintf(median(post_m2b$b_SubspeciesHamadryas),fmt='%#.2f'), sprintf(median(post_m2b$b_SexM),fmt='%#.2f'), sprintf(median(post_m2b$'b_SubspeciesHamadryas:SexM'),fmt='%#.2f'), sprintf(median(post_m2b$bs_sdate.z_1),fmt='%#.2f'), sprintf(median(post_m2b$sds_sdate.z_1),fmt='%#.2f'), "",  sprintf(median(post_m2b$sd_Corral__Intercept),fmt='%#.2f'), sprintf(median(post_m2b$sigma),fmt='%#.2f'), sprintf(median(post_m2b$sd_Corral__Intercept/(post_m2b$sd_Corral__Intercept+post_m2b$sigma)),fmt='%#.2f'), "","","",sprintf(median(post_m2c$b_Intercept),fmt='%#.2f'), sprintf(median(post_m2c$b_log_weight.z),fmt='%#.2f'), sprintf(median(post_m2c$b_corral_size.z),fmt='%#.2f'), sprintf(median(post_m2c$b_LactatingLactating),fmt='%#.2f'), sprintf(median(post_m2c$b_GD_DOC),fmt='%#.2f'), sprintf(median(post_m2c$b_SubspeciesHamadryas),fmt='%#.2f'), sprintf(median(post_m2c$b_SexM),fmt='%#.2f'), sprintf(median(post_m2c$'b_SubspeciesHamadryas:SexM'),fmt='%#.2f'), sprintf(median(post_m2c$bs_sdate.z_1),fmt='%#.2f'), sprintf(median(post_m2c$sds_sdate.z_1),fmt='%#.2f'), "",  sprintf(median(post_m2c$sd_Corral__Intercept),fmt='%#.2f'), sprintf(median(post_m2c$sigma),fmt='%#.2f'), sprintf(median(post_m2c$sd_Corral__Intercept/(post_m2c$sd_Corral__Intercept+post_m2c$sigma)),fmt='%#.2f'), "","","",sprintf(median(post_m2d$b_Intercept),fmt='%#.2f'), sprintf(median(post_m2d$b_log_weight.z),fmt='%#.2f'), sprintf(median(post_m2d$b_corral_size.z),fmt='%#.2f'), sprintf(median(post_m2d$b_Blood_in_CSFY),fmt='%#.2f'), sprintf(median(post_m2d$b_LactatingLactating),fmt='%#.2f'), sprintf(median(post_m2d$b_GD_DOC),fmt='%#.2f'), sprintf(median(post_m2d$b_SubspeciesHamadryas),fmt='%#.2f'), sprintf(median(post_m2d$b_SexM),fmt='%#.2f'), sprintf(median(post_m2d$'b_SubspeciesHamadryas:SexM'),fmt='%#.2f'), sprintf(median(post_m2d$bs_sdate.z_1),fmt='%#.2f'), sprintf(median(post_m2d$sds_sdate.z_1),fmt='%#.2f'), "",  sprintf(median(post_m2d$sd_Corral__Intercept),fmt='%#.2f'), sprintf(median(post_m2d$sigma),fmt='%#.2f'), sprintf(median(post_m2d$sd_Corral__Intercept/(post_m2d$sd_Corral__Intercept+post_m2d$sigma)),fmt='%#.2f'))
+
+lwr90CI_CSFOT = c("","",sprintf(HPDI(post_m2a$b_Intercept, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2a$b_log_weight.z, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2a$b_corral_size.z, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2a$b_Blood_in_CSFY, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2a$b_LactatingLactating, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2a$b_GD_DOC, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2a$b_SubspeciesHamadryas, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2a$b_SexM, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2a$'b_SubspeciesHamadryas:SexM', prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2a$bs_sdate.z_1, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2a$sds_sdate.z_1, prob=0.9)[1],fmt='%#.2f'), "", sprintf(HPDI(post_m2a$sd_Corral__Intercept, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2a$sigma, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2a$sd_Corral__Intercept/(post_m2a$sd_Corral__Intercept+post_m2a$sigma), prob=0.9)[1],fmt='%#.2f'))
+
+lwr90CI_plasmaOT = c("","","",sprintf(HPDI(post_m2b$b_Intercept, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2b$b_log_weight.z, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2b$b_corral_size.z, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2b$b_Plasma_LysisY, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2b$b_LactatingLactating, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2b$b_GD_DOC, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2b$b_SubspeciesHamadryas, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2b$b_SexM, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2b$'b_SubspeciesHamadryas:SexM', prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2b$bs_sdate.z_1, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2b$sds_sdate.z_1, prob=0.9)[1],fmt='%#.2f'), "", sprintf(HPDI(post_m2b$sd_Corral__Intercept, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2b$sigma, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2b$sd_Corral__Intercept/(post_m2b$sd_Corral__Intercept+post_m2b$sigma), prob=0.9)[1],fmt='%#.2f'))
+
+lwr90CI_urineOT = c("","","",sprintf(HPDI(post_m2c$b_Intercept, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2c$b_log_weight.z, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2c$b_corral_size.z, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2c$b_LactatingLactating, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2c$b_GD_DOC, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2c$b_SubspeciesHamadryas, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2c$b_SexM, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2c$'b_SubspeciesHamadryas:SexM', prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2c$bs_sdate.z_1, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2c$sds_sdate.z_1, prob=0.9)[1],fmt='%#.2f'), "", sprintf(HPDI(post_m2c$sd_Corral__Intercept, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2c$sigma, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2c$sd_Corral__Intercept/(post_m2c$sd_Corral__Intercept+post_m2c$sigma), prob=0.9)[1],fmt='%#.2f'))
+
+lwr90CI_CSFAVP = c("","","",sprintf(HPDI(post_m2d$b_Intercept, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2d$b_log_weight.z, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2d$b_corral_size.z, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2d$b_Blood_in_CSFY, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2d$b_LactatingLactating, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2d$b_GD_DOC, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2d$b_SubspeciesHamadryas, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2d$b_SexM, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2d$'b_SubspeciesHamadryas:SexM', prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2d$bs_sdate.z_1, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2d$sds_sdate.z_1, prob=0.9)[1],fmt='%#.2f'),"", sprintf(HPDI(post_m2d$sd_Corral__Intercept, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2d$sigma, prob=0.9)[1],fmt='%#.2f'), sprintf(HPDI(post_m2d$sd_Corral__Intercept/(post_m2d$sd_Corral__Intercept+post_m2d$sigma), prob=0.9)[1],fmt='%#.2f'))
+
+lower90CI<- c(lwr90CI_CSFOT, lwr90CI_plasmaOT, lwr90CI_urineOT, lwr90CI_CSFAVP)
+
+upr90CI_CSFOT = c("","",sprintf(HPDI(post_m2a$b_Intercept, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2a$b_log_weight.z, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2a$b_corral_size.z, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2a$b_Blood_in_CSFY, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2a$b_LactatingLactating, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2a$b_GD_DOC, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2a$b_SubspeciesHamadryas, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2a$b_SexM, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2a$'b_SubspeciesHamadryas:SexM', prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2a$bs_sdate.z_1, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2a$sds_sdate.z_1, prob=0.9)[2],fmt='%#.2f'), "", sprintf(HPDI(post_m2a$sd_Corral__Intercept, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2a$sigma, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2a$sd_Corral__Intercept/(post_m2a$sd_Corral__Intercept+post_m2a$sigma), prob=0.9)[2],fmt='%#.2f'))
+
+upr90CI_plasmaOT = c("","","",sprintf(HPDI(post_m2b$b_Intercept, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2b$b_log_weight.z, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2b$b_corral_size.z, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2b$b_Plasma_LysisY, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2b$b_LactatingLactating, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2b$b_GD_DOC, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2b$b_SubspeciesHamadryas, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2b$b_SexM, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2b$'b_SubspeciesHamadryas:SexM', prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2b$bs_sdate.z_1, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2b$sds_sdate.z_1, prob=0.9)[2],fmt='%#.2f'), "",  sprintf(HPDI(post_m2b$sd_Corral__Intercept, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2b$sigma, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2b$sd_Corral__Intercept/(post_m2b$sd_Corral__Intercept+post_m2b$sigma), prob=0.9)[2],fmt='%#.2f'))
+
+upr90CI_urineOT = c("","","",sprintf(HPDI(post_m2c$b_Intercept, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2c$b_log_weight.z, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2c$b_corral_size.z, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2c$b_LactatingLactating, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2c$b_GD_DOC, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2c$b_SubspeciesHamadryas, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2c$b_SexM, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2c$'b_SubspeciesHamadryas:SexM', prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2c$bs_sdate.z_1, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2c$sds_sdate.z_1, prob=0.9)[2],fmt='%#.2f'), "",  sprintf(HPDI(post_m2c$sd_Corral__Intercept, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2c$sigma, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2c$sd_Corral__Intercept/(post_m2c$sd_Corral__Intercept+post_m2c$sigma), prob=0.9)[2],fmt='%#.2f'))
+
+upr90CI_CSFAVP = c("","","",sprintf(HPDI(post_m2d$b_Intercept, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2d$b_log_weight.z, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2d$b_corral_size.z, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2d$b_Blood_in_CSFY, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2d$b_LactatingLactating, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2d$b_GD_DOC, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2d$b_SubspeciesHamadryas, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2d$b_SexM, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2d$'b_SubspeciesHamadryas:SexM', prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2d$bs_sdate.z_1, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2d$sds_sdate.z_1, prob=0.9)[2],fmt='%#.2f'), "",  sprintf(HPDI(post_m2d$sd_Corral__Intercept, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2d$sigma, prob=0.9)[2],fmt='%#.2f'), sprintf(HPDI(post_m2d$sd_Corral__Intercept/(post_m2d$sd_Corral__Intercept+post_m2d$sigma), prob=0.9)[2],fmt='%#.2f'))
+
+upper90CI<- c(upr90CI_CSFOT, upr90CI_plasmaOT, upr90CI_urineOT, upr90CI_CSFAVP)
+
+
+s2<- data.frame(Parameter, Median, lower90CI, upper90CI)
+                
+kable(s2) 
+  
+```
+
+\newpage
+## Figure S1: Hormone levels in hamadryas and anubis baboons (univariate models)
+Same as Figure 1, but each dependent variable (CSF OT, plasma OT, urinary OT, CSF AVP) was analyzed separately, without imputation but using information about censored data. For more details see caption of Figure 1
+
+```{r Figure S1}
+library(MetBrewer)
+col.ham.female<- MetPalettes$Lakota[[1]][1]
+col.ham.male<- MetPalettes$Lakota[[1]][2]
+col.an.female<- MetPalettes$Lakota[[1]][6]
+col.an.male<- MetPalettes$Lakota[[1]][3]
+
+#tiff("Figure S1.tif", compression="lzw", height=6.0, width=12.0, units="cm", res=600, pointsize=5)
+
+par(mfrow=c(2,4), oma=c(3,3,0,0), mar=c(3,2,3,1))
+
+dens(post_m2a$b_SubspeciesHamadryas, xlab="", ylab="", main="", col="white", ylim=c(0,1.3), xlim=c(-2,2), bty = "n")
+polygon(density(post_m2a$b_Intercept+post_m2a$b_SubspeciesHamadryas), col=adjustcolor(col.ham.female, alpha.f=0.5))
+polygon(density(post_m2a$b_Intercept), col=adjustcolor(col.an.female, alpha.f=0.5))
+polygon(density(post_m2a$b_SubspeciesHamadryas), col=NULL, lty=2)
+abline(v=0)
+legend("topright", legend=round(sum(post_m2a$b_SubspeciesHamadryas>0)/length(post_m2a$b_SubspeciesHamadryas),2), border="white", bty="n", cex=1.2)
+
+mtext(text="Probability Density",side=2,line=1,outer=TRUE)
+mtext(text="CSF Oxytocin",side=3,line=1)
+
+dens(post_m2b$b_SubspeciesHamadryas, xlab="", ylab="", main="", col="white", ylim=c(0,0.75), xlim=c(-3,2), bty = "n")
+polygon(density(post_m2b$b_Intercept+post_m2b$b_SubspeciesHamadryas), col=adjustcolor(col.ham.female, alpha.f=0.5))
+polygon(density(post_m2b$b_Intercept), col=adjustcolor(col.an.female, alpha.f=0.5))
+polygon(density(post_m2b$b_SubspeciesHamadryas), col=NULL, lty=2)
+abline(v=0)
+mtext(text="Plasma Oxytocin",side=3,line=1)
+legend("topright", legend=round(sum(post_m2b$b_SubspeciesHamadryas>0)/length(post_m2b$b_SubspeciesHamadryas),2), border="white", bty="n", cex=1.2)
+
+dens(post_m2c$b_SubspeciesHamadryas, xlab="", ylab="", main="", col="white", ylim=c(0,1.2), xlim=c(-2,2), bty = "n")
+polygon(density(post_m2c$b_Intercept+post_m2c$b_SubspeciesHamadryas), col=adjustcolor(col.ham.female, alpha.f=0.5))
+polygon(density(post_m2c$b_Intercept), col=adjustcolor(col.an.female, alpha.f=0.5))
+polygon(density(post_m2c$b_SubspeciesHamadryas), col=NULL, lty=2)
+abline(v=0)
+mtext(text="Urinary Oxytocin",side=3,line=1)
+legend("topright", legend=round(sum(post_m2c$b_SubspeciesHamadryas>0)/length(post_m2c$b_SubspeciesHamadryas),2), border="white", bty="n", cex=1.2)
+
+dens(post_m2d$b_SubspeciesHamadryas, xlab="", ylab="", main="", col="white", ylim=c(0,0.5), xlim=c(-6,3), bty = "n")
+polygon(density(post_m2d$b_Intercept+post_m2d$b_SubspeciesHamadryas), col=adjustcolor(col.ham.female, alpha.f=0.5))
+polygon(density(post_m2d$b_Intercept), col=adjustcolor(col.an.female, alpha.f=0.5))
+polygon(density(post_m2d$b_SubspeciesHamadryas), col=NULL, lty=2)
+abline(v=0)
+mtext("Females",cex=1, side=4,line=0, las = 0)
+mtext(text="CSF AVP",side=3,line=1)
+legend("topright", legend=round(sum(post_m2d$b_SubspeciesHamadryas>0)/length(post_m2d$b_SubspeciesHamadryas),2), border="white", bty="n", cex=1.2)
+
+par(mar=c(2,2,4,1))
+
+dens(CSFOT_hamadryasmales, xlab="", ylab="", main="", col="white", ylim=c(0,1.25), xlim=c(-2,2), bty = "n")
+polygon(density(CSFOT_hamadryasmales), col=adjustcolor(col.ham.male, alpha.f=0.5))
+polygon(density(CSFOT_anubismales), col=adjustcolor(col.an.male, alpha.f=0.5))
+polygon(density(CSFOT_hamadryasmales-CSFOT_anubismales), col=NULL, lty=2)
+abline(v=0)
+legend("topright", legend=round(sum(CSFOT_hamadryasmales-CSFOT_anubismales>0)/length(CSFOT_hamadryasmales),2), border="white", bty="n", cex=1.2)
+
+dens(plasmaOT_hamadryasmales, xlab="", ylab="", main="", col="white", ylim=c(0,0.8), bty = "n")
+polygon(density(plasmaOT_hamadryasmales), col=adjustcolor(col.ham.male, alpha.f=0.5))
+polygon(density(plasmaOT_anubismales), col=adjustcolor(col.an.male, alpha.f=0.5))
+polygon(density(plasmaOT_hamadryasmales-plasmaOT_anubismales), col=NULL, lty=2)
+abline(v=0)
+legend("topright", legend=round(sum(plasmaOT_hamadryasmales-plasmaOT_anubismales>0)/length(plasmaOT_hamadryasmales),2), border="white", bty="n", cex=1.2)
+
+dens(urineOT_hamadryasmales, xlab="", ylab="", main="", col="white", ylim=c(0,1.2), xlim=c(-3,3), bty = "n")
+polygon(density(urineOT_hamadryasmales), col=adjustcolor(col.ham.male, alpha.f=0.5))
+polygon(density(urineOT_anubismales), col=adjustcolor(col.an.male, alpha.f=0.5))
+polygon(density(urineOT_hamadryasmales-urineOT_anubismales), col=NULL, lty=2)
+abline(v=0)
+legend("topright", legend=round(sum(urineOT_hamadryasmales-urineOT_anubismales>0)/length(urineOT_hamadryasmales),2), border="white", bty="n", cex=1.2)
+
+dens(CSFAVP_hamadryasmales, xlab="", ylab="", main="", col="white", ylim=c(0,0.5), xlim=c(-6,3), bty = "n")
+polygon(density(CSFAVP_hamadryasmales), col=adjustcolor(col.ham.male, alpha.f=0.5))
+polygon(density(CSFAVP_anubismales), col=adjustcolor(col.an.male, alpha.f=0.5))
+polygon(density(CSFAVP_hamadryasmales-CSFAVP_anubismales), col=NULL, lty=2)
+abline(v=0)
+mtext("Males",cex=1, side=4,line=0, las = 0)
+legend("topright", legend=round(sum(CSFAVP_hamadryasmales-CSFAVP_anubismales>0)/length(CSFAVP_hamadryasmales),2), border="white", bty="n", cex=1.2)
+
+mtext("log hormone levels [centered]",cex=1, side=1,line=1, outer=TRUE)
+
+# add legend in the center
+par(xpd=NA)
+
+legend(x=-45, y=0.825, ncol=2, fill=c(adjustcolor(col.ham.female, alpha.f=0.5),adjustcolor(col.an.female, alpha.f=0.5),adjustcolor(col.ham.male, alpha.f=0.5),adjustcolor(col.an.male, alpha.f=0.5)), border="black", legend=c("Hamadryas Females", "Anubis Females", "Hamadryas Males", "Anubis Males"), bty="n", cex=1.4, pt.cex=1.4)
+
+legend(x=-15, y=0.775, lty=2, seg.len=2, legend="Hamadryas - Anubis", bty="n", cex=1.4, pt.cex=1.4)
+
+#dev.off()
+
+```
+
+\newpage
+## Figure S2: Visualization of date splines (multi-response model)
+
+```{r Figure S2, include=TRUE}
+datesplines<- conditional_effects(m1, effects = "date.z", prob=0.9)
+library(MetBrewer)
+col.S2<- MetPalettes$Austria[[1]][5]
+
+par(mfrow=c(2,2), oma=c(3,3,0,0), mar=c(2,2,3,1))
+plot(datesplines[[1]]$estimate__~datesplines[[1]]$effect1__, ylab = "", xlab = "", ylim=c(-1,1.5), type="l", main="CSF Oxytocin", col=col.S2, bty="n")
+polygon(c(datesplines[[1]]$effect1__, rev(datesplines[[1]]$effect1__)), c(datesplines[[1]]$lower__, rev(datesplines[[1]]$upper__)), col=adjustcolor(col.S2, alpha.f=0.5), border=NA)
+plot(datesplines[[2]]$estimate__~datesplines[[2]]$effect1__, ylab = "", xlab = "", ylim=c(-2,2), type="l", main="Plasma Oxytocin", col=col.S2, bty="n")
+polygon(c(datesplines[[2]]$effect1__, rev(datesplines[[2]]$effect1__)), c(datesplines[[2]]$lower__, rev(datesplines[[2]]$upper__)), col=adjustcolor(col.S2, alpha.f=0.5), border=NA)
+plot(datesplines[[3]]$estimate__~datesplines[[3]]$effect1__, ylab = "", xlab = "", ylim=c(-2,2), type="l", main="Urinary Oxytocin", col=col.S2, bty="n")
+polygon(c(datesplines[[3]]$effect1__, rev(datesplines[[3]]$effect1__)), c(datesplines[[3]]$lower__, rev(datesplines[[3]]$upper__)), col=adjustcolor(col.S2, alpha.f=0.5), border=NA)
+plot(datesplines[[4]]$estimate__~datesplines[[4]]$effect1__, ylab = "", xlab = "", ylim=c(-1.5,2), type="l", main="CSF Vasopressin", col=col.S2, bty="n")
+polygon(c(datesplines[[4]]$effect1__, rev(datesplines[[4]]$effect1__)), c(datesplines[[4]]$lower__, rev(datesplines[[4]]$upper__)), col=adjustcolor(col.S2, alpha.f=0.5), border=NA)
+mtext("log hormone levels [centered]",cex=1, side=2,line=1, outer=TRUE)
+mtext("Date of collection [Z]",cex=1, side=1,line=1, outer=TRUE)
+
+```
