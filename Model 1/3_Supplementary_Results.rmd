@@ -1,7 +1,7 @@
 ---
 title: "Supplementary results"
-subtitle: "It’s not the hormones: Oxytocin and vasopressin concentrations do not differ between two baboon species (_Papio_ _hamadryas_ and _Papio_ _anubis_) with highly divergent social systems"
-author: "Daniel J. Coppeto, Erik J. Ringen, Vittorio Palmeri, Larry J. Young, Adrian V. Jaeggi"
+subtitle: "Peptides and primate personality: Central and peripheral oxytocin and vasopressin levels and social behavior in two baboon species (_Papio_ _hamadryas_ and _Papio_ _anubis_)"
+author: "Daniel J. Coppeto, Jordan S. Martin, Erik J. Ringen, Vittorio Palmeri, Larry J. Young, Adrian V. Jaeggi"
 toc: true
 output:
   pdf_document: default
